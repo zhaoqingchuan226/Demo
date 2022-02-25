@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class GithubTest : MonoBehaviour
 {
-    public string str = "GitTest1";
+    public string str = "GitTest2";
 }
