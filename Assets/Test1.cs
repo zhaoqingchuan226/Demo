@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test3 : MonoBehaviour
+public class Test1 : MonoBehaviour
 {
   
     void Start()
@@ -13,6 +13,8 @@ public class Test3 : MonoBehaviour
     public void Run(int i)
     {
         Debug.Log("天黑了我要回家了"+i);
+          Debug.Log("天黑了我要回家了"+i);
+            Debug.Log("天黑了我要回家了"+i);
     }
 
    
