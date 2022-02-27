@@ -5,14 +5,13 @@ using UnityEngine;
 public class LibraryManager : MonoBehaviour
 {
     public Transform libraryPanel;
-    public GameObject cardLibraryPrefab;
+    public GameObject cardPrefab;
 
-    public PlayerData playerData;
-    public CardStore cardStore;
+
+
     void Start()
     {
         StartCoroutine(WaitForNextFrame());
-   
     }
     IEnumerator WaitForNextFrame()
     {
@@ -22,23 +21,17 @@ public class LibraryManager : MonoBehaviour
     }
     void Update()
     {
-      
+
     }
 
     public void UpdateLibrary()
     {
-        
-        for (int i = 0; i < playerData.playerCards.Length; i++)
+        foreach (var playerCard in PlayerData.Instance.playerCards)
         {
-           
-            if (playerData.playerCards[i] > 0)
-            {
-                GameObject card = Instantiate(cardLibraryPrefab, libraryPanel);
-                card.GetComponent<CardCounter>().SetCounter(playerData.playerCards[i]);
-                card.GetComponent<CardDisplay>().card = cardStore.cards[i];
-            }
-
+            GameObject card = Instantiate(cardPrefab, libraryPanel);
+            card.GetComponent<CardDisplay>().card = playerCard;
         }
+
 
     }
 }

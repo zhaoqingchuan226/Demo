@@ -516,7 +516,6 @@ MonoBehaviour:
   cardAmount: 5
   cardPrefab: {fileID: 3736702439609907685, guid: 3a91beb89e779e549b9eae64cb960f4a, type: 3}
   cardGroup: {fileID: 404470190}
-  playerData: {fileID: 1324887049}
 --- !u!1 &260794270
 GameObject:
   m_ObjectHideFlags: 0

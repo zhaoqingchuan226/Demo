@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //所有原始卡的卡池
-public class CardStore : MonoBehaviour
+public class CardStore : MonoSingleton<CardStore>
 {
     public TextAsset cardData;
     public List<Card> cards = new List<Card>();//这是所有的原始卡牌
@@ -23,6 +23,7 @@ public class CardStore : MonoBehaviour
         string[] dataRows = cardData.text.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
         foreach (var dataRow in dataRows)
         {
+          
             string[] elements = dataRow.Split(',', System.StringSplitOptions.RemoveEmptyEntries);
             if (elements[0] == "id")
             {
@@ -51,11 +52,29 @@ public class CardStore : MonoBehaviour
                     actionType = Card.ActionType.Unknown;
                 }
 
-                string times =elements[5];
+                string times=null;
+
+                if (elements[4].Contains("上"))
+                {
+                    times += "上";
+                }
+                else if (elements[4].Contains("中"))
+                {
+                    times += "中";
+                }
+                else if (elements[4].Contains("下"))
+                {
+                    times += "下";
+                }
+                if (elements[4].Contains("晚"))
+                {
+                    times += "晚";
+                }
+           
 
 
 
-                    Card card = new Card(id, title, description, qualityLevel, actionType, times);
+                Card card = new Card(id, title, description, qualityLevel, actionType, times);
                 cards.Add(card);
             }
         }
@@ -68,9 +87,14 @@ public class CardStore : MonoBehaviour
         }
     }
 
-    public Card RandomCard()//从原始卡牌中随机选择一张返回
+    public Card RandomCard()//从原始卡牌中随机选择一张,返回其深拷贝
     {
-        return cards[Random.Range(0, cards.Count)];
+        return new Card(cards[Random.Range(0, cards.Count)]);
+    }
+
+    public void InstanceTest()
+    {
+
     }
 
 }

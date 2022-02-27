@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-public class PlayerData : MonoBehaviour
+public class PlayerData : MonoSingleton<PlayerData>
 {
-    public CardStore cardStore;//原始卡数据
+
     public int playerMoney;
-    public int[] playerCards;//索引代表原始卡牌id，值代表玩家拥有的该id的卡牌的张数
+
+    public List<Card> playerCards = new List<Card>();//索引代表原始卡牌id，值代表玩家拥有的该id的卡牌的张数
 
     public TextAsset playerDataCSV;
-
+    public List<string> datas = new List<string>();
     public string Date = "第一周";
     public string Name = "王大宝";
     public int physicalHealth = 10;
@@ -33,20 +34,23 @@ public class PlayerData : MonoBehaviour
 
     void Start()
     {
+        playerCards.Clear();
+        datas.Clear();
+
         LoadPlayerData();
+
     }
 
 
     void Update()
     {
-     
+
     }
 
     public void LoadPlayerData()
     {
 
 
-        playerCards = new int[cardStore.cards.Count];
         string[] dataRows = playerDataCSV.text.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
         foreach (var dataRow in dataRows)
         {
@@ -58,8 +62,29 @@ public class PlayerData : MonoBehaviour
             else if (elements[0] == "card")
             {
                 int id = int.Parse(elements[1]);
-                int num = int.Parse(elements[2]);
-                playerCards[id] = num;
+                string title = elements[2];
+                string description = elements[3];
+                int qualityLevel = int.Parse(elements[4]);
+
+
+                Card.ActionType actionType;
+                if (elements[5].Contains("动"))
+                {
+                    actionType = Card.ActionType.Dynamic;
+                }
+                else if (elements[5].Contains("静"))
+                {
+                    actionType = Card.ActionType.Static;
+                }
+
+                else
+                {
+                    actionType = Card.ActionType.Unknown;
+                }
+
+                string times = elements[6];
+                Card card = new Card(id, title, description, qualityLevel, actionType, times);
+                playerCards.Add(card);
             }
         }
     }
@@ -68,19 +93,42 @@ public class PlayerData : MonoBehaviour
     {
         //路径
         string path = Application.dataPath + "/Data/PlayerData.csv";
-
-        List<string> datas = new List<string>();
+        datas.Clear();
         datas.Add("money," + playerMoney.ToString());
-        for (int i = 0; i < playerCards.Length; i++)
+        datas.Add("money," + playerMoney.ToString());
+        datas.Add("money," + playerMoney.ToString());
+        datas.Add("#,id,title,description,qualitylevel,actionType,time");
+       
+        foreach (var playerCard in playerCards)
         {
-            if (playerCards[i] != 0)
+            string actionType;
+            if (playerCard.actionType == Card.ActionType.Dynamic)
             {
-                datas.Add("card," + i.ToString() + "," + playerCards[i].ToString());
+                actionType = "动";
             }
+            else if (playerCard.actionType == Card.ActionType.Static)
+            {
+                actionType = "静";
+            }
+            else
+            {
+                actionType = "未知";
+            }
+            string str = "card," + playerCard.id.ToString() + "," + playerCard.title + "," + playerCard.description + "," + playerCard.qualityLevel.ToString() + "," + actionType + "," + playerCard.times;
+
+
+            datas.Add(str);
 
         }
+        // foreach (var playerCard in playerCards)
+        // {
+
+        //     datas.Add("1");
+        // }
+
 
         //储存datas到路径，生成csv
+        File.WriteAllLines(path, datas);
         File.WriteAllLines(path, datas);
     }
 
@@ -89,15 +137,14 @@ public class PlayerData : MonoBehaviour
     {
         string path = Application.dataPath + "/Data/PlayerData.csv";
         List<string> datas = new List<string>();
-        datas.Add("money,14");
+        datas.Add("money,100");
         //储存datas到路径，生成csv
         File.WriteAllLines(path, datas);
-        playerMoney = 14;
-        for (int i = 0; i < cardStore.cards.Count; i++)
-        {
-            playerCards[i] = 0;
-        }
-
+        playerMoney = 100;
+        playerCards.Clear();
 
     }
+   
+
+
 }
